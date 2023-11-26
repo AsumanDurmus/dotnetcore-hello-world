@@ -1,9 +1,13 @@
 pipeline {
-    agent {
-        docker {
-            image 'docker:dind'
-            args '-v /var/run/docker.sock:/var/run/docker.sock'
-        }
+    agent none
+
+    environment {
+        APPLICATION = 'dotnetsample'
+        DOCKER_REGISTRY = 'hasanalperen'
+        DOCKER_CREDENTIALS_ID = 'dockerhub'
+        IMAGE = "${DOCKER_REGISTRY}/${APPLICATION}:${BUILD_NUMBER}"
+        KUBE_CONFIG_CREDENTIALS_ID = 'kubeconfig'
+        KUBERNETES_API_SERVER_URL = ''
     }
 
     stages {
@@ -17,14 +21,16 @@ pipeline {
         stage('Docker Build and Push') {
             agent {
                 docker {
-                    image 'your-docker-build-agent'
+                    image 'docker:dind'
                 }
             }
             steps {
                 script {
-                    docker.withRegistry('https://your-docker-registry', 'your-docker-credentials-id') {
-                        def customImage = docker.build("your-docker-registry/your-image-name:${env.BUILD_NUMBER}")
-                        customImage.push()
+                    {
+                    withCredentials([usernamePassword(credentialsId: 'dockerHub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
+                        sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
+                        sh "docker build -t ${IMAGE} . "
+                        sh "docker push ${IMAGE}"
                     }
                 }
             }
@@ -33,14 +39,14 @@ pipeline {
         stage('Kubernetes Deployment') {
             agent {
                 docker {
-                    image 'your-kubernetes-deploy-agent'
+                    image 'd3fk/kubectl:latest'
                 }
             }
             steps {
                 script {
-                    def kubeConfig = credentials('your-kubeconfig-credentials-id')
-                    withKubeConfig([credentialsId: kubeConfig, serverUrl: 'your-kubernetes-api-server-url']) {
-                        sh 'kubectl apply -f your-kubernetes-deployment-file.yaml'
+                    withCredentials([file(credentialsId: 'kubeConfig', variable: 'kubeConfig')]) {
+                        sh "echo ${kubeConfig} > .kube/config
+                        sh "kubectl get nodes"
                     }
                 }
             }

@@ -51,7 +51,7 @@ pipeline {
                 }
             }
         }
-
+    }
     post {
         success {
             echo 'Pipeline succeeded! You may want to add more post-success actions here.'
@@ -60,6 +60,5 @@ pipeline {
             echo 'Pipeline failed! You may want to add more post-failure actions here.'
         }
     }
-}
 }
     

@@ -5,14 +5,13 @@ pipeline {
         APPLICATION = 'dotnetsample'
         DOCKER_REGISTRY = 'hasanalperen'
         IMAGE = '${DOCKER_REGISTRY}/${APPLICATION}:${BUILD_NUMBER}'
-        KUBE_CONFIG_CREDENTIALS_ID = 'kubeconfig'
     }
 
     stages {
         stage('Checkout') {
             agent any
             steps {
-                checkout scm
+                git 'https://github.com/alperen-selcuk/dotnetcore-hello-world.git'
             }
         }
 
@@ -20,11 +19,11 @@ pipeline {
             agent {
                 docker {
                     image 'docker:dind'
+                    args '--user root -v /var/run/docker.sock:/var/run/docker.sock'
                 }
             }
             steps {
                 script {
-                    {
                     withCredentials([usernamePassword(credentialsId: 'dockerHub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
                         sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
                         sh "docker build -t ${IMAGE} . "
@@ -33,7 +32,7 @@ pipeline {
                 }
             }
         }
-        }
+
         stage('Kubernetes Deployment') {
             agent {
                 docker {
@@ -43,7 +42,7 @@ pipeline {
             steps {
                 script {
                     withCredentials([file(credentialsId: 'kubeConfig', variable: 'kubeConfig')]) {
-                        sh "echo ${kubeConfig} > .kube/config"
+                        sh "echo ${env.kubeConfig} > .kube/config"
                         sh "kubectl get nodes"
                     }
                 }

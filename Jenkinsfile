@@ -41,8 +41,7 @@ pipeline {
             }
             steps {
                 script {
-                    withCredentials([file(credentialsId: 'kubeConfig', variable: 'kubeConfig')]) {
-                        sh "echo ${env.kubeConfig} > .kube/config"
+                    kubeconfig(credentialsId: 'kubeConfig', serverUrl: 'https://104.155.69.227') {
                         sh "kubectl get nodes"
                     }
                 }

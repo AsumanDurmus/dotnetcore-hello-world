@@ -4,10 +4,8 @@ pipeline {
     environment {
         APPLICATION = 'dotnetsample'
         DOCKER_REGISTRY = 'hasanalperen'
-        DOCKER_CREDENTIALS_ID = 'dockerhub'
-        IMAGE = "${DOCKER_REGISTRY}/${APPLICATION}:${BUILD_NUMBER}"
+        IMAGE = '${DOCKER_REGISTRY}/${APPLICATION}:${BUILD_NUMBER}'
         KUBE_CONFIG_CREDENTIALS_ID = 'kubeconfig'
-        KUBERNETES_API_SERVER_URL = ''
     }
 
     stages {

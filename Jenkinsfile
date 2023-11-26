@@ -35,7 +35,7 @@ pipeline {
                 }
             }
         }
-        ]
+        }
         stage('Kubernetes Deployment') {
             agent {
                 docker {
@@ -45,7 +45,7 @@ pipeline {
             steps {
                 script {
                     withCredentials([file(credentialsId: 'kubeConfig', variable: 'kubeConfig')]) {
-                        sh "echo ${kubeConfig} > .kube/config
+                        sh "echo ${kubeConfig} > .kube/config"
                         sh "kubectl get nodes"
                     }
                 }

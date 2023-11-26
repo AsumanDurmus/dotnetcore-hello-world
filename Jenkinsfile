@@ -35,7 +35,7 @@ pipeline {
                 }
             }
         }
-
+        ]
         stage('Kubernetes Deployment') {
             agent {
                 docker {
@@ -51,7 +51,6 @@ pipeline {
                 }
             }
         }
-    }
 
     post {
         success {

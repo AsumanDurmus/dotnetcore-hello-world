@@ -60,11 +60,10 @@ pipeline {
             steps {
                     git (
                         url: "https://github.com/${GIT_USER}/${GIT_REPO}.git",
-                        branch: "master",
+                        branch: "main",
                         poll: true
                     )
                     sh '''
-                        cd ${GIT_REPO}
                         git config user.email "alperenhasanselcuk@gmail.com"
                         git config user.name "Alperen SELCUK"
                         BUILD_NUMBER=${BUILD_NUMBER}

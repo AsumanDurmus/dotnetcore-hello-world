@@ -53,8 +53,10 @@ pipeline {
 // ARGO DEPLOYMENT
         stage('Update Deployment File') {
             steps {
-                withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
+                withCredentials([usernamePassword(credentialsId: 'github', passwordVariable: 'GITHUB_TOKEN')]) {
                     sh '''
+                        git clone https://github.com/${GIT_USER}/${GIT_REPO}.git
+                        cd ${GIT_REPO}
                         git config user.email "alperenhasanselcuk@gmail.com"
                         git config user.name "Alperen SELCUK"
                         BUILD_NUMBER=${BUILD_NUMBER}

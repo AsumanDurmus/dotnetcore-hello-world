@@ -58,7 +58,11 @@ pipeline {
                 }
             }
             steps {
-                    git 'https://github.com/${GIT_USER}/${GIT_REPO}.git'
+                    git (
+                        url: "https://github.com/${GIT_USER}/${GIT_REPO}.git",
+                        branch: "master",
+                        poll: true
+                    )
                     sh '''
                         git config user.email "alperenhasanselcuk@gmail.com"
                         git config user.name "Alperen SELCUK"

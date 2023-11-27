@@ -69,7 +69,7 @@ pipeline {
                         git config user.name "Alperen SELCUK"
                         BUILD_NUMBER=${BUILD_NUMBER}
                         sed -i 's|image: ${DOCKER_REGISTRY}/${APPLICATION}:[0-9]*|image: ${DOCKER_REGISTRY}/${APPLICATION}:${BUILD_NUMBER}|' deployment.yaml
-                        git status
+                        cat deployment.yaml
                         git add deployment.yaml
                         git commit -m "Update deployment image to version ${BUILD_NUMBER}"
                         '''

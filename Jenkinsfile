@@ -52,20 +52,24 @@ pipeline {
 
 // ARGO DEPLOYMENT
         stage('Update Deployment File') {
+            agent {
+                docker {
+                    image 'mrnonz/alpine-git-curl'
+                }
+            }
             steps {
-                withCredentials([usernamePassword(credentialsId: 'github', passwordVariable: 'GITHUB_TOKEN')]) {
+                    git 'https://github.com/${GIT_USER}/${GIT_REPO}.git'
                     sh '''
-                        git clone https://github.com/${GIT_USER}/${GIT_REPO}.git
-                        cd ${GIT_REPO}
                         git config user.email "alperenhasanselcuk@gmail.com"
                         git config user.name "Alperen SELCUK"
                         BUILD_NUMBER=${BUILD_NUMBER}
                         sed -i 's|image: ${DOCKER_REGISTRY}/${APPLICATION}:[0-9]*|image: ${DOCKER_REGISTRY}/${APPLICATION}:${BUILD_NUMBER}|' deployment.yaml
                         git add deployment.yaml
                         git commit -m "Update deployment image to version ${BUILD_NUMBER}"
-                        git push https://${GITHUB_TOKEN}@github.com/${GIT_USER}/${GIT_REPO} HEAD:main
-                    '''
-                }
+                        '''
+                        withCredentials([gitUsernamePassword(credentialsId: 'github', gitToolName: 'Default')]) {
+                            sh "git push origin main"
+                        }
             }
         }
     }

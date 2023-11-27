@@ -36,16 +36,15 @@ pipeline {
         stage('Kubernetes Deployment') {
             agent {
                 docker {
-                    image 'd3fk/kubectl:latest'
+                    image 'hasanalperen/kubectl'
+                    args '-v /root/azkubeconfig:/.kube/config'
                 }
             }
             steps {
                 script {
-                    kubeconfig(credentialsId: 'kubeConfig', serverUrl: 'https://104.155.69.227') {
-                        sh "kubectl get nodes"
+                        sh 'kubectl get nodes'
                     }
                 }
-            }
         }
     }
     post {

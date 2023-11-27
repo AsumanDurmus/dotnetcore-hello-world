@@ -54,7 +54,7 @@ pipeline {
         stage('Update Deployment File') {
             agent {
                 docker {
-                    image 'mrnonz/alpine-git-curl'
+                    image 'mohamnag/ubuntu-git'
                 }
             }
             steps {
@@ -64,7 +64,6 @@ pipeline {
                         poll: true
                     )
                     sh '''
-                        ls
                         git config user.email "alperenhasanselcuk@gmail.com"
                         git config user.name "Alperen SELCUK"
                         BUILD_NUMBER=${BUILD_NUMBER}

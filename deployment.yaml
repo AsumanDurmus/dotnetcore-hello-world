@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: app
-        image: hasanalperen/myapp:VERSION
+        image: asumancw/cicd:VERSION
         ports:
         - containerPort: 80
 
